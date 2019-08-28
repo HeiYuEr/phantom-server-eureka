@@ -1,0 +1,9 @@
+FROM registry-vpc.cn-shenzhen.aliyuncs.com/town-library/openjdk:8-jre
+
+MAINTAINER KingBoy KingBoyWorld@163.com
+
+COPY build/libs/*.jar /application.jar
+
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+ENTRYPOINT ["java", "-jar", "-Xms1000m", "-Xmx1000m", "/application.jar", "--spring.profiles.active=master"]

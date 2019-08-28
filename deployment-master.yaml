@@ -1,0 +1,20 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: phantom-server-eureka-master
+  namespace: test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: phantom-server-eureka-master
+    spec:
+      containers:
+      - name: phantom-server-eureka-master
+        image: nginx:1.13
+        ports:
+        - containerPort: 7001
+        resources:
+          limits:
+            memory: 1000Mi

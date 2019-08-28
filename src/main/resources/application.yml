@@ -1,0 +1,86 @@
+spring:
+  #应用名称
+  application:
+    name: phantom-server-eureka
+
+#设置actuator开关
+management:
+  security:
+    enabled: false
+
+#安全配置
+security:
+  basic:
+    enabled: true
+  user:
+    name: kingboy
+    password: 123456
+eureka:
+  server:
+    ## 中小规模下，自我保护模式坑比好处多，所以关闭它
+    enable-self-preservation: false
+    ## 主动失效检测间隔,配置成5秒
+    eviction-interval-timer-in-ms: 5000
+    ## 禁用readOnlyCacheMap
+    use-read-only-response-cache: false
+  instance:
+    ## 心跳间隔，5秒
+    lease-renewal-interval-in-seconds: 5
+    ## 没有心跳的淘汰时间，1秒
+    lease-expiration-duration-in-seconds: 10
+#默认启动节点
+---
+server:
+  port: 7000
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+#开发环境
+---
+spring:
+  profiles: develop
+server:
+  port: 7000
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+#master节点
+---
+spring:
+  profiles: master
+server:
+  port: 7001
+eureka:
+  instance:
+    hostname: phantom-server-eureka-master
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${security.user.name}:${security.user.password}@phantom-server-eureka-slave:7002/eureka/
+
+#slave节点
+---
+spring:
+  profiles: slave
+server:
+  port: 7002
+eureka:
+  instance:
+    hostname: phantom-server-eureka-slave
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${security.user.name}:${security.user.password}@phantom-server-eureka-master:7001/eureka/

@@ -1,0 +1,20 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: phantom-server-eureka-slave
+  namespace: test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: phantom-server-eureka-slave
+    spec:
+      containers:
+      - name: phantom-server-eureka-slave
+        image: nginx:1.13
+        ports:
+        - containerPort: 7002
+        resources:
+          limits:
+            memory: 1000Mi
